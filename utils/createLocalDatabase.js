@@ -1,16 +1,16 @@
-const pgtools = require("pgtools");
+const pgtools = require('pgtools');
 
 // An object with user, host, port, and password properties;
 const config = process.env.DATABASE_URL || {
-  user: "postgres",
-  host: "localhost",
+  user: 'postgres',
+  host: 'localhost',
   port: 5432,
-  password: process.env.LOCAL_DATABASE_PASSWORD,
+  password: process.env.LOCAL_DATABASE_PASSWORD
 };
 // const config = process.env.DATABASE_URL;
 
 // The name of the database to create;
-const databaseName = require("./databaseName");
+const databaseName = require('./databaseName');
 
 // A callback that takes an error argument;
 // If cb is omitted the function will return a Promise;
