@@ -1,34 +1,10 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
-const { Campus } = require("../database/models");
-
-let mockCampusesArray = [
-  {
-    id: "3434454",
-    name: "Brooklyn College",
-    address: "Brooklyn",
-    imageUrl: "",
-    description: "A college in Brooklyn",
-  },
-  {
-    id: "3434455",
-    name: "CSI",
-    address: "Staten Island",
-    imageUrl: "",
-    description: "A college in Staten Island",
-  },
-  {
-    id: "3434457",
-    name: "John Jay",
-    address: "New York",
-    imageUrl: "",
-    description: "A college in Manhattan",
-  },
-];
+const { Campus } = require('../database/models');
 
 /* GET all campuses. */
 // /api/campuses
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   // try to get campuses object from database
   try {
     // campuses will be the result of the Campus.findAll promise
@@ -44,7 +20,7 @@ router.get("/", async (req, res, next) => {
 // Route to serve single campus based on its id
 // /api/campuses/:id
 // /api/campuses/456 would respond with a campus with id 456
-router.get("/:id", async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   // take the id from params
   const { id } = req.params;
   // query the database for a campus with matching id
@@ -58,12 +34,11 @@ router.get("/:id", async (req, res, next) => {
     // handle error
     next(err);
   }
-  // const campus = mockCampusesArray.find((campus) => campus.id === id);
 });
 
 // Route to handle adding a campus
 // /api/campuses/
-router.post("/", async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   // Take the form data from the request body
   const { name, address, description, imageUrl } = req.body;
   // Create a campus object
@@ -71,7 +46,7 @@ router.post("/", async (req, res, next) => {
     name: name,
     address: address,
     imageUrl: imageUrl,
-    description: description,
+    description: description
   };
   try {
     // Create a new campus on the database
@@ -87,39 +62,53 @@ router.post("/", async (req, res, next) => {
 // Route to handle editing a campus
 // /api/campuses/:id
 // /api/campuses/456 would modify a campus with id 456
-router.put("/:id", (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
   // get the id from request params
   const { id } = req.params;
   // get form data from the request body
-  const { description } = req.body;
-  console.log(id, description);
-
-  const campusIndex = mockCampusesArray.findIndex((c) => c.id === id);
-  const newCampus = { ...mockCampusesArray[campusIndex], description };
-  mockCampusesArray[campusIndex] = newCampus;
-
-  // Find a campus with a matching id from the database
-  // database would return a valid campus object or an error
-  // if successfull:
-  // modify the campus object with new form data
-  // save the new campus object to the data
-  // database would return a new campus object
-  // send the newCampus as a response from the API
-  // if error:
-  // handle the error
-
-  res.status(201).send(newCampus);
+  const { name, address, description, imageUrl } = req.body;
+  const updatedObj = {
+    name: name,
+    address: address,
+    description: description,
+    imageUrl: imageUrl
+  };
+  try {
+    // if successfull:
+    // Find a campus with a matching id from the database
+    const campus = await Campus.findByPk(id);
+    // database would return a valid campus object or an error
+    console.log(updatedObj);
+    // modify the campus object with new form data
+    await campus.set(updatedObj);
+    // save the new campus object to the data
+    // database would return a new campus object
+    const updatedCampus = await campus.save();
+    console.log(updatedCampus);
+    // send the newCampus as a response from the API
+    res.status(201).send(updatedCampus);
+  } catch (err) {
+    // if error:
+    // handle the error
+    next(err);
+  }
 });
 
 // Route to handle removing a campus
-router.delete("/:id", (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
   const { id } = req.params;
-  mockCampusesArray = mockCampusesArray.filter((campus) => campus.id !== id);
   // get an id for a campus to delete
-  // pass the id to the database to delete a campus
-  // database would either respond succcess or fail
-  // send a success or fail response to the client
-  res.status(204);
+  try {
+    // pass the id to the database to find campus to be deleted
+    // database would either respond succcess or fail
+    const campus = await Campus.findByPk(id);
+    // invoke the .destroy() method on the returned campus
+    await campus.destroy();
+    // send a success message to the client
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

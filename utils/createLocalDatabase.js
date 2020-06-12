@@ -8,8 +8,6 @@ const config = {
   password: process.env.LOCAL_DATABASE_PASSWORD
 };
 
-// const config = process.env.DATABASE_URL;
-
 // The name of the database to create;
 const databaseName = require('./databaseName');
 
