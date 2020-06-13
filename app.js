@@ -31,7 +31,6 @@ const syncDatabase = () => {
       .then(() => seedDatabase())
       .catch(err => {
         if (err.name === 'SequelizeConnectionError') {
-          // console.log('WHAT' + err);
           createLocalDatabase();
           seedDatabase();
         } else {
@@ -40,34 +39,6 @@ const syncDatabase = () => {
       });
   }
 };
-
-// const syncDatabase = () => {
-//   if (process.env.NODE_ENV === 'production') {
-//     db.sync();
-//   } else {
-//     try {
-//       const connectionString =
-//         'postgres://postgres:postgres@localhost:5432/ttp-crud-server';
-//       const db2 = new Client(connectionString);
-//       db2.connect();
-//     } catch (err) {
-//       console.log(err);
-//       createLocalDatabase();
-//       seedDatabase();
-//     }
-//     console.log('As a reminder, the forced synchronization option is on');
-//     // db.sync({ force: true })
-//     //   .then(() => seedDatabase())
-//     //   .catch(err => {
-//     //     if (err.name === 'SequelizeConnectionError') {
-//     //       // createLocalDatabase();
-//     //       // seedDatabase();
-//     //     } else {
-//     //       console.log(err);
-//     //     }
-//     //   });
-//   }
-// };
 
 // Instantiate our express application;
 const app = express();
