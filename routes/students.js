@@ -74,6 +74,7 @@ router.post('/', async (req, res, next) => {
     imageUrl: imageUrl,
     gpa: gpa
   };
+  // console.log(studentObj);
   try {
     // Create a new student on the database
     const newStudent = await Student.create(studentObj);
@@ -81,6 +82,7 @@ router.post('/', async (req, res, next) => {
     // send that student as a json to the client
     res.status(201).send(newStudent);
   } catch (err) {
+    console.log(err);
     next(err);
   }
 });
@@ -92,12 +94,13 @@ router.put('/:id', async (req, res, next) => {
   // get the id from request params
   const { id } = req.params;
   // get form data from the request body
-  const { name, address, description, imageUrl } = req.body;
+  const { firstName, lastName, email, imageUrl, gpa } = req.body;
   const updatedObj = {
-    name: name,
-    address: address,
-    description: description,
-    imageUrl: imageUrl
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    imageUrl: imageUrl,
+    gpa: gpa
   };
   try {
     // if successfull:
