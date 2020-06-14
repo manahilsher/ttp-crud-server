@@ -83,7 +83,9 @@ router.post('/', async (req, res, next) => {
     res.status(201).send(newStudent);
   } catch (err) {
     console.log(err);
-    next(err);
+    // next(err);
+    // res.send(err);
+    res.status(400).json(err);
   }
 });
 
