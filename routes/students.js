@@ -89,38 +89,24 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// Route to handle editing a student
-// /api/students/:id
-// /api/students/456 would modify a student with id 456
 router.put('/:id', async (req, res, next) => {
-  // get the id from request params
   const { id } = req.params;
-  // get form data from the request body
-  const { firstName, lastName, email, imageUrl, gpa } = req.body;
+  const { firstName, lastName, email, imageUrl, gpa, campusId } = req.body;
   const updatedObj = {
     firstName: firstName,
     lastName: lastName,
     email: email,
     imageUrl: imageUrl,
-    gpa: gpa
+    gpa: gpa,
+    campusId: campusId
   };
   try {
-    // if successfull:
-    // Find a student with a matching id from the database
     const student = await Student.findByPk(id);
-    // database would return a valid student object or an error
     console.log(updatedObj);
-    // modify the student object with new form data
     await student.set(updatedObj);
-    // save the new student object to the data
-    // database would return a new student object
     const updatedStudent = await student.save();
-    console.log(updatedStudent);
-    // send the newStudent as a response from the API
     res.status(201).send(updatedStudent);
   } catch (err) {
-    // if error:
-    // handle the error
     next(err);
   }
 });
